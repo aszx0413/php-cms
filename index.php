@@ -138,10 +138,10 @@ function globalSql1($tb, $tbCn)
 
     // CREATE TABLE START
     $sql .= "CREATE TABLE `{$tb}` (" . "\n";
-    $sql .= "\t" . "`id` INT(10) NOT NULL AUTO_INCREMENT," . "\n";
-    $sql .= "\t" . "`add_time` DATETIME NOT NULL DEFAULT NOW()," . "\n";
-    $sql .= "\t" . "`update_time` DATETIME NOT NULL DEFAULT NOW()," . "\n";
-    $sql .= "\t" . "`status` TINYINT(1) NOT NULL DEFAULT 1," . "\n";
+    $sql .= "\t" . "`id`          INT(10) NOT NULL AUTO_INCREMENT," . "\n";
+    $sql .= "\t" . "`add_time`    DATETIME NOT NULL DEFAULT NOW()," . "\n";
+    $sql .= "\t" . "`update_time` DATETIME NOT NULL DEFAULT '0'," . "\n";
+    $sql .= "\t" . "`status`      TINYINT(1) NOT NULL DEFAULT 1," . "\n";
     $sql .= "\n";
 
     return $sql;
@@ -158,14 +158,14 @@ function colSql($col)
     $sql .= "\t";
 
     // column name
-    $sql .= "`{$col['col']}`";
+    $sql .= str_pad("`{$col['col']}`", 18);
 
     // type and length
     if ($col['len']) {
-        $sql .= " {$col['type']}({$col['len']})";
+        $sql .= ' ' . str_pad("{$col['type']}({$col['len']})", 13);
     } else {
         // DATETIME etc.
-        $sql .= " {$col['type']}";
+        $sql .= ' ' . str_pad("{$col['type']}", 13);
     }
 
     // NOT NULL
@@ -175,9 +175,9 @@ function colSql($col)
     // if there is INT, regardless INT/TINYINT/MEDIUMINT/BIGINT,
     // then it should be default 0
     if (strpos($col['type'], 'INT') !== false) {
-        $sql .= " DEFAULT 0";
+        $sql .= " DEFAULT 0  ";
     } elseif ($col['type'] == 'VARCHAR' || $col['type'] == 'TEXT') {
-        $sql .= " DEFAULT ''";
+        $sql .= " DEFAULT '' ";
     } elseif ($col['type'] == 'DATETIME') {
         $sql .= " DEFAULT '0'";
     }
