@@ -30,6 +30,7 @@ function aa($v)
     echo "\n";
     die;
 }
+
 function bb($v)
 {
     echo "\n";
@@ -39,11 +40,19 @@ function bb($v)
     echo "\n";
 }
 
+if ($argc < 2) {
+    die('Usage: php index.php <PROJECT_NAME>' . "\n");
+} elseif (!file_exists(dirname(__FILE__) . '/' . $argv[1] . '.xlsx')) {
+    die('Excel 文件 ' . $argv[1] . " 不存在！\n");
+}
+
+$projectName = $argv[1];
+
 // excel absolute filepath
-$excelFilePath = './demo.xlsx';
+$excelFilePath = './' . $projectName . '.xlsx';
 
 // sql filepath
-$sqlFilePath = "./demo.sql";
+$sqlFilePath = './' . $projectName . '.sql';
 
 // templates dir
 $tplDir = "./tpl";
@@ -200,7 +209,7 @@ function globalSql2($tbCn)
     // PRIMARY KEY
     $sql .= "\t" . "PRIMARY KEY(`id`)" . "\n";
 
-    $sql .= ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_bin COMMENT '{$tbCn}';" . "\n\n";
+    $sql .= ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_bin COMMENT '{$tbCn}';" . "\n\n\n";
 
     return $sql;
 }

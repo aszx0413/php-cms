@@ -6,6 +6,10 @@ It should be fun.
 
 `~ php index.php [param]`
 
+- param
+
+`{$param}`为项目标识，在根目录必须存在`{$param}.xlsx`文件
+
 ## Excel格式
 
 #### 实体标识

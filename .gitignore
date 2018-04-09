@@ -4,3 +4,6 @@
 demo.xlsx
 ~$demo.xlsx
 demo.sql
+
+*.xlsx
+*.sql
