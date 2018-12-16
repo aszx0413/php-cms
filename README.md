@@ -4,11 +4,15 @@ It should be fun.
 
 ## Usage
 
-`~ php index.php [param]`
+`~ php index.php <PROJECT_NAME> [<TABLE_NAME>]`
 
-- param
+- PROJECT_NAME
 
-`{$param}`为项目标识，在根目录必须存在`{$param}.xlsx`文件
+`<PROJECT_NAME>`为项目标识，在根目录必须存在`projects/<PROJECT_NAME>.xlsx`文件
+
+- TABLE_NAME
+
+`<TABLE_NAME>`为库表名，表示连接数据库更新库表
 
 ## Excel格式
 
