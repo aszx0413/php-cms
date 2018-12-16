@@ -41,18 +41,18 @@ function bb($v)
 }
 
 if ($argc < 2) {
-    die('Usage: php index.php <PROJECT_NAME>' . "\n");
-} elseif (!file_exists(dirname(__FILE__) . '/' . $argv[1] . '.xlsx')) {
+    die('Usage: php index.php <PROJECT_NAME> [<TABLE_NAME>]' . "\n");
+} elseif (!file_exists(dirname(__FILE__) . '/projects/' . $argv[1] . '.xlsx')) {
     die('Excel 文件 ' . $argv[1] . " 不存在！\n");
 }
 
 $projectName = $argv[1];
 
 // excel absolute filepath
-$excelFilePath = './' . $projectName . '.xlsx';
+$excelFilePath = './projects/' . $projectName . '.xlsx';
 
 // sql filepath
-$sqlFilePath = './' . $projectName . '.sql';
+$sqlFilePath = './projects/' . $projectName . '.sql';
 
 // templates dir
 $tplDir = "./tpl";
@@ -112,6 +112,14 @@ for ($ri = 1; $ri <= $cntRows; $ri++) {
 // finish processing excel
 // --------------------------------------------------
 
+// PDO
+try {
+	$conn = new PDO("mysql:dbname={$projectName};host=localhost", 'root', 'root');
+} catch (Error $e) {
+	_e($e->getMessage());
+}
+
+
 // --------------------------------------------------
 // process sql file
 
@@ -120,14 +128,30 @@ $sql = '';
 
 // loop tables
 foreach ($tables as $tb) {
-    $sql .= globalSql1($tb['tableName'], $tb['tableNameCn']);
+
+	$singleTableSql = '';
+
+	$singleTableSql .= globalSql1($tb['tableName'], $tb['tableNameCn']);
 
     // loop cols
     foreach ($tb['cols'] as $col) {
-        $sql .= colSql($col);
+		$singleTableSql .= colSql($col);
     }
 
-    $sql .= globalSql2($tb['tableNameCn']);
+	$singleTableSql .= globalSql2($tb['tableNameCn']);
+
+    if (in_array($tb['tableName'], $argv)) {
+		$stmt = $conn->prepare($singleTableSql);
+		$stmt->execute();
+
+//    	$sqls = explode(';', $singleTableSql);
+//		foreach ($sqls as $s) {
+//			$stmt = $conn->prepare($s);
+//			$stmt->execute();
+//    	}
+	}
+
+    $sql .= $singleTableSql;
 }
 
 file_put_contents($sqlFilePath, $sql);
@@ -149,7 +173,7 @@ function globalSql1($tb, $tbCn)
     $sql .= "CREATE TABLE `{$tb}` (" . "\n";
     $sql .= "\t" . "`id`          INT(10) NOT NULL AUTO_INCREMENT," . "\n";
     $sql .= "\t" . "`add_time`    DATETIME NOT NULL DEFAULT NOW()," . "\n";
-    $sql .= "\t" . "`update_time` DATETIME NOT NULL DEFAULT '0'," . "\n";
+    $sql .= "\t" . "`update_time` DATETIME NOT NULL DEFAULT '0000-00-00'," . "\n";
     $sql .= "\t" . "`status`      TINYINT(1) NOT NULL DEFAULT 1," . "\n";
     $sql .= "\n";
 
@@ -184,11 +208,13 @@ function colSql($col)
     // if there is INT, regardless INT/TINYINT/MEDIUMINT/BIGINT,
     // then it should be default 0
     if (strpos($col['type'], 'INT') !== false) {
-        $sql .= " DEFAULT 0  ";
+        $sql .= " DEFAULT 0           ";
     } elseif ($col['type'] == 'VARCHAR' || $col['type'] == 'TEXT') {
-        $sql .= " DEFAULT '' ";
+        $sql .= " DEFAULT ''          ";
     } elseif ($col['type'] == 'DATETIME') {
-        $sql .= " DEFAULT '0'";
+        $sql .= " DEFAULT '0000-00-00'";
+    } elseif ($col['type'] == 'DECIMAL') {
+        $sql .= " DEFAULT 0           ";
     }
 
     // COMMENT
@@ -209,7 +235,8 @@ function globalSql2($tbCn)
     // PRIMARY KEY
     $sql .= "\t" . "PRIMARY KEY(`id`)" . "\n";
 
-    $sql .= ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_bin COMMENT '{$tbCn}';" . "\n\n\n";
+    // ENGINE=InnoDB MyISAM
+    $sql .= ") ENGINE=InnoDb CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '{$tbCn}';" . "\n\n\n";
 
     return $sql;
 }
