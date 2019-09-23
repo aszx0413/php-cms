@@ -1,5 +1,13 @@
 {
-    "require": {
-        "phpoffice/phpexcel": "^1.8"
+  "require": {
+    "phpoffice/phpexcel": "^1.8",
+    "phpoffice/phpspreadsheet": "^1.9",
+    "league/plates": "^3.3"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/"
     }
+  }
 }

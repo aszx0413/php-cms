@@ -82,7 +82,7 @@ for ($ri = 1; $ri <= $cntRows; $ri++) {
     if ($sheet->getCell('B' . $ri)->getValue() == 'Table') {
         $table = [];
 
-        $table['tableName'] = trim($sheet->getCell('C' . $ri)->getValue());
+        $table['tableName']   = trim($sheet->getCell('C' . $ri)->getValue());
         $table['tableNameCn'] = trim($sheet->getCell('D' . $ri)->getValue());
 
         // skip the header rows
@@ -114,12 +114,10 @@ for ($ri = 1; $ri <= $cntRows; $ri++) {
 
 // PDO
 try {
-	$conn = new PDO("mysql:dbname={$projectName};host=localhost", 'root', 'root');
-} catch (Error $e) {
-	_e($e->getMessage());
+    $conn = new PDO("mysql:dbname={$projectName};host=localhost", 'root', 'root');
+} catch (PDOException $e) {
+    // _e($e->getMessage());
 }
-
-
 // --------------------------------------------------
 // process sql file
 
@@ -129,27 +127,27 @@ $sql = '';
 // loop tables
 foreach ($tables as $tb) {
 
-	$singleTableSql = '';
+    $singleTableSql = '';
 
-	$singleTableSql .= globalSql1($tb['tableName'], $tb['tableNameCn']);
+    $singleTableSql .= globalSql1($tb['tableName'], $tb['tableNameCn']);
 
     // loop cols
     foreach ($tb['cols'] as $col) {
-		$singleTableSql .= colSql($col);
+        $singleTableSql .= colSql($col);
     }
 
-	$singleTableSql .= globalSql2($tb['tableNameCn']);
+    $singleTableSql .= globalSql2($tb['tableNameCn']);
 
     if (in_array($tb['tableName'], $argv)) {
-		$stmt = $conn->prepare($singleTableSql);
-		$stmt->execute();
+        $stmt = $conn->prepare($singleTableSql);
+        $stmt->execute();
 
-//    	$sqls = explode(';', $singleTableSql);
-//		foreach ($sqls as $s) {
-//			$stmt = $conn->prepare($s);
-//			$stmt->execute();
-//    	}
-	}
+//        $sqls = explode(';', $singleTableSql);
+        //        foreach ($sqls as $s) {
+        //            $stmt = $conn->prepare($s);
+        //            $stmt->execute();
+        //        }
+    }
 
     $sql .= $singleTableSql;
 }
@@ -173,7 +171,7 @@ function globalSql1($tb, $tbCn)
     $sql .= "CREATE TABLE `{$tb}` (" . "\n";
     $sql .= "\t" . "`id`          INT(10) NOT NULL AUTO_INCREMENT," . "\n";
     $sql .= "\t" . "`add_time`    DATETIME NOT NULL DEFAULT NOW()," . "\n";
-    $sql .= "\t" . "`update_time` DATETIME NOT NULL DEFAULT '0000-00-00'," . "\n";
+    $sql .= "\t" . "`update_time` DATETIME NOT NULL," . "\n";
     $sql .= "\t" . "`status`      TINYINT(1) NOT NULL DEFAULT 1," . "\n";
     $sql .= "\n";
 
@@ -191,7 +189,7 @@ function colSql($col)
     $sql .= "\t";
 
     // column name
-    $sql .= str_pad("`{$col['col']}`", 18);
+    $sql .= str_pad("`{$col['col']}`", 20);
 
     // type and length
     if ($col['len']) {
@@ -212,7 +210,7 @@ function colSql($col)
     } elseif ($col['type'] == 'VARCHAR' || $col['type'] == 'TEXT') {
         $sql .= " DEFAULT ''          ";
     } elseif ($col['type'] == 'DATETIME') {
-        $sql .= " DEFAULT '0000-00-00'";
+        $sql .= "                     ";
     } elseif ($col['type'] == 'DECIMAL') {
         $sql .= " DEFAULT 0           ";
     }
