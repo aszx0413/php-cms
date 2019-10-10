@@ -11,6 +11,16 @@
             </tr>
             <?php endforeach;?>
 
+            <tr>
+                <td></td>
+                <td colspan="3">
+                    <button type="submit" class="btn btn-primary">确认提交</button>
+                </td>
+            </tr>
         </tbody>
     </table>
 </form>
+
+<script type="text/javascript">
+    $(function() {})
+</script>
