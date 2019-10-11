@@ -3,6 +3,12 @@
     <!-- 搜索区域 -->
     <div class="col-md-12 list-cond">
         <form class="form-inline" action="" method="get">
+            <?php foreach ($cols as $col):?><?php if(strpos($col['list'],'S')!==false): ?><div class="form-group">
+                <label for=""><?=$col['colCn']?></label>
+                <input type="text" class="form-control" name="<?=$col['col']?>" value="<<?=$mark?>=$_GET['<?=$col['col']?>']?>" placeholder="" />
+            </div>
+            <?php endif; ?><?php endforeach;?>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 搜索</button>
                 <a href="/" class="btn btn-second">重置</a>

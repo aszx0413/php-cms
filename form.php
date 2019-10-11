@@ -6,7 +6,7 @@
             <?php foreach ($cols as $col):?><tr>
                 <th><?=$col['colCn']?></th>
                 <td>
-                    <input type="text" class="form-control" name="<?=$col['col']?>" value="<<?=$mark?>=$row['<?=$col['col']?>']?>" />
+                    <input type="text" class="form-control" name="<?=$col['col']?>" value="<<?=$mark?>=$row['<?=$col['col']?>']?>" <?php if(strpos($col['form'],'R')!==false): ?>required<?php endif; ?> />
                 </td>
             </tr>
             <?php endforeach;?>
