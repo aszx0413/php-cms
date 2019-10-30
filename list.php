@@ -47,8 +47,8 @@
                             <<?=$mark?>=htmlStatus($v['status'])?>
                         </td>
                         <td class="text-right">
-                            <a class="btn btn-primary btn-xs" href="//edit?id=<<?=$mark?>=$v['id']?>"><span class="glyphicon glyphicon-edit"></span></a>
-                            <a class="btn btn-danger btn-xs" href="//del?id=<<?=$mark?>=$v['id']?>" onclick="return confirm('确认删除吗？');"><span class="glyphicon glyphicon-trash"></span></a>
+                            <a class="btn btn-primary btn-xs" href="/<<?=$mark?>=RTC?>/edit?id=<<?=$mark?>=$v['id']?>"><span class="glyphicon glyphicon-edit"></span></a>
+                            <a class="btn btn-danger btn-xs" href="/<<?=$mark?>=RTC?>/del?id=<<?=$mark?>=$v['id']?>" onclick="return confirm('确认删除吗？');"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                     <<?=$mark?>php endforeach; ?>
